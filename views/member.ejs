@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= member.firstName %> <%= member.lastName %></title>
+    <link rel="stylesheet" href="/memberStyles.css">
+</head>
+<body>
+    <div class="member-info">
+        <img src="<%= member.photo %>" alt="<%= member.firstName %> <%= member.lastName %>">
+        <h2><%= member.firstName %> <%= member.lastName %></h2>
+        <p><strong>Вік:</strong> <%= member.age %></p>
+        <p><strong>Курс:</strong> <%= member.course %></p>
+        <p><strong>Група:</strong> <%= member.group %></p>
+        <p><strong>Навички у IT:</strong></p>
+        <ul>
+            <% member.skills.forEach(skill => { %>
+                <li><%= skill %></li>
+            <% }); %>
+        </ul>
+        <a href="/">Назад до головної</a>
+    </div>
+</body>
+</html>
