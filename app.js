@@ -14,7 +14,8 @@ const brigade = {
             age: 18,
             course: 2,
             group: "ІС-31",
-            skills: ["Python (Flask, Django, Tkinter, SQLAlchemy, Asyncio)", "JS", "Java", "C++", "SQLite3", "PostgreSQL", "Docker"]
+            skills: ["Python (Flask, Django, Tkinter, SQLAlchemy, Asyncio)", "JS", "Java", "C++", "SQLite3", "PostgreSQL", "Docker"],
+            photo: "/images/sokha.jpg"
         },
         {
             id: 2,
@@ -24,7 +25,7 @@ const brigade = {
             course: 2,
             group: "ІС-31",
             skills: ["C#/.Net", "ASP.NET Core", "HTML", "CSS", "JS", "MySQL", "SQLServer", "MongoDB"],
-            photo: "/images/andriy.jpg"
+            photo: "/images/shevchuk.JPG"
         },
         {
             id: 3,
@@ -44,7 +45,7 @@ const brigade = {
             course: 2,
             group: "ІС-31",
             skills: ["C#/.Net", "HTML", "CSS", "JS", "MySQL", "SQLServer"],
-            photo: "/images/anastasia.jpg"
+            photo: "/images/anastasia.jpeg"
         },
         {
             id: 5,

@@ -28,6 +28,7 @@ body {
         .member-card img {
             width: 100%;
             height: auto;
+            max-height: 250px;
             border-radius: 10px;
         }
 
@@ -52,3 +53,4 @@ body {
         .github-link a:hover {
             text-decoration: underline;
         }
+
