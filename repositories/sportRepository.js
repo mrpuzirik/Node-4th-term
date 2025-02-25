@@ -4,24 +4,37 @@ const fsPromises = require('fs').promises;
 class SportRepository {
   getGamesSync() {
     const data = fs.readFileSync('./data/testData.json', 'utf8');
-    return JSON.parse(data).games;
+    const parsedData = JSON.parse(data);
+    return this.mergeGamesWithResults(parsedData.games, parsedData.results);
   }
 
   getGamesCallback(callback) {
     fs.readFile('./data/testData.json', 'utf8', (err, data) => {
       if (err) return callback(err);
-      callback(null, JSON.parse(data).games);
+      const parsedData = JSON.parse(data);
+      callback(null, this.mergeGamesWithResults(parsedData.games, parsedData.results));
     });
   }
 
   getGamesPromise() {
     return fsPromises.readFile('./data/testData.json', 'utf8')
-      .then(data => JSON.parse(data).games);
+      .then(data => {
+        const parsedData = JSON.parse(data);
+        return this.mergeGamesWithResults(parsedData.games, parsedData.results);
+      });
   }
 
   async getGames() {
     const data = await fsPromises.readFile('./data/testData.json', 'utf8');
-    return JSON.parse(data).games;
+    const parsedData = JSON.parse(data);
+    return this.mergeGamesWithResults(parsedData.games, parsedData.results);
+  }
+
+  mergeGamesWithResults(games, results) {
+    return games.map(game => {
+      const result = results.find(r => r.gameId === game.id);
+      return { ...game, score: result ? result.score : 'Немає результату' };
+    });
   }
 }
 

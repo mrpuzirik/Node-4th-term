@@ -12,11 +12,13 @@
     <tr>
       <th>Дата</th>
       <th>Учасники</th>
+      <th>Результат</th>
     </tr>
     <% games.forEach(game => { %>
       <tr>
         <td><%= game.date %></td>
         <td><%= game.participants.join(' vs ') %></td>
+        <td><%= game.score %></td>
       </tr>
     <% }) %>
   </table>
