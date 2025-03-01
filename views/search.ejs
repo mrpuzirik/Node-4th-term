@@ -8,19 +8,24 @@
 <body>
   <h1>Результати пошуку для "<%= team %>"</h1>
   <a href="/schedule">Назад до розкладу</a>
-  <table>
-    <tr>
-      <th>Дата</th>
-      <th>Учасники</th>
-      <th>Результат</th>
-    </tr>
-    <% games.forEach(game => { %>
+
+  <% if (games.length === 0) { %>
+    <p>Команду "<%= team %>" не знайдено у розкладі.</p>
+  <% } else { %>
+    <table>
       <tr>
-        <td><%= game.date %></td>
-        <td><%= game.participants.join(' vs ') %></td>
-        <td><%= game.score %></td>
+        <th>Дата</th>
+        <th>Учасники</th>
+        <th>Результат</th>
       </tr>
-    <% }) %>
-  </table>
+      <% games.forEach(game => { %>
+        <tr>
+          <td><%= game.date %></td>
+          <td><%= game.participants.join(' vs ') %></td>
+          <td><%= game.score %></td>
+        </tr>
+      <% }) %>
+    </table>
+  <% } %>
 </body>
 </html>
