@@ -16,11 +16,20 @@ router.post('/game', async (req, res) => {
 router.post('/update-game', async (req, res) => {
     const { gameId, score } = req.body;
 
-    console.log(`Оновлено результат гри ${gameId}: ${score}`);
+    if (!/^\d+:\d+$/.test(score) && score !== "Немає результату") {
+        console.log('Помилка: результат гри повинен бути у форматі "число:число" або "Немає результату".');
+        return res.redirect(`/admin?error=${encodeURIComponent('Невірний формат рахунку! Введіть у форматі "число:число" або "Немає результату".')}`);
+    }
 
-    res.redirect('/admin');
+    try {
+        //await sportService.addResult(parseInt(gameId), score);
+        console.log(`Оновлено результат гри ${gameId}: ${score}`);
+        res.redirect('/admin');
+    } catch (error) {
+        console.error('Помилка при оновленні результату:', error);
+        res.redirect(`/admin?error=Внутрішня помилка сервера`);
+    }
 });
-
 
 router.post('/update-date', async (req, res) => {
   const { gameId, date } = req.body;
