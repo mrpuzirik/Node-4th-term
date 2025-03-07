@@ -1,6 +1,6 @@
 const express = require('express');
 const sportController = require('./controllers/sportController');
-const adminRoutes = require('./controllers/adminController');
+const adminController = require('./controllers/adminController');
 
 
 
@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use('/', sportController);
-app.use('/admin', adminRoutes);
+app.use('/admin', adminController);
 
 const PORT = 3000;
 app.listen(PORT, () => {
