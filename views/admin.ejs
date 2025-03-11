@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Адмін-панель</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<h1>Адмін-панель</h1>
+<a href="/schedule">Переглянути розклад</a>
+
+<h2>Додати гру</h2>
+<form action="/admin/game" method="post">
+    <input type="date" name="date" required>
+    <input type="text" name="team1" placeholder="Команда 1" required>
+    <input type="text" name="team2" placeholder="Команда 2" required>
+    <button type="submit">Додати</button>
+</form>
+
+<h2>Керування матчами</h2>
+<table>
+    <tr>
+        <th>Дата</th>
+        <th>Учасники</th>
+        <th>Результат</th>
+        <th>Редагування</th>
+        <th>Видалити</th>
+    </tr>
+    <% games.forEach(game => { %>
+        <tr>
+            <td>
+                <form action="/admin/update-date" method="post">
+                    <input type="hidden" name="gameId" value="<%= game.id %>">
+                    <input type="date" name="date" value="<%= game.date %>" required>
+                    <button type="submit">Зберегти</button>
+                </form>
+            </td>
+            <td><%= game.participants.join(' vs ') %></td>
+            <td><%= game.score %></td>
+            <td>
+                <form action="/admin/update-game" method="post">
+                    <input type="hidden" name="gameId" value="<%= game.id %>">
+                    <input type="text" name="score" value="<%= game.score %>" required>
+
+                    <button type="submit">Зберегти</button>
+                </form>
+
+            </td>
+            <td>
+                <form action="/admin/delete" method="post">
+                    <input type="hidden" name="gameId" value="<%= game.id %>">
+                    <button type="submit">Видалити</button>
+                </form>
+            </td>
+        </tr>
+    <% }) %>
+</table>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorMessage = urlParams.get('error');
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    });
+</script>
+</body>
+</html>
