@@ -24,6 +24,7 @@
     "readdirp": "^3.6.0",
     "semver": "^7.7.1",
     "simple-update-notifier": "^2.0.0",
+    "sqlite3": "^5.1.7",
     "to-regex-range": "^5.0.1",
     "touch": "^3.1.1",
     "undefsafe": "^2.0.5"

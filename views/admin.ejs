@@ -9,11 +9,42 @@
 <h1>Адмін-панель</h1>
 <a href="/schedule">Переглянути розклад</a>
 
+<h2>Додати нову команду</h2>
+<form action="/admin/team" method="post">
+    <input type="text" name="teamName" placeholder="Назва нової команди" required>
+    <button type="submit">Додати команду</button>
+</form>
+
+<h2>Список команд</h2>
+<form action="/admin/delete-team" method="post">
+    <label for="team">Виберіть команду для видалення:</label>
+    <select name="teamId" id="team" required>
+        <option value="">Вибрати команду</option>
+        <% teams.forEach(team => { %>
+            <option value="<%= team.id %>"><%= team.name %></option>
+        <% }) %>
+    </select>
+    <button type="submit">Видалити</button>
+</form>
+
 <h2>Додати гру</h2>
 <form action="/admin/game" method="post">
     <input type="date" name="date" required>
-    <input type="text" name="team1" placeholder="Команда 1" required>
-    <input type="text" name="team2" placeholder="Команда 2" required>
+
+    <select name="team1" required>
+        <option value="">Команда 1</option>
+        <% teams.forEach(team => { %>
+            <option value="<%= team.name %>"><%= team.name %></option>
+        <% }) %>
+    </select>
+
+    <select name="team2" required>
+        <option value="">Команда 2</option>
+        <% teams.forEach(team => { %>
+            <option value="<%= team.name %>"><%= team.name %></option>
+        <% }) %>
+    </select>
+
     <button type="submit">Додати</button>
 </form>
 
@@ -35,16 +66,14 @@
                     <button type="submit">Зберегти</button>
                 </form>
             </td>
-            <td><%= game.participants.join(' vs ') %></td>
-            <td><%= game.score %></td>
+            <td><%= game.team1 %> vs <%= game.team2 %></td>
+            <td><%= game.score || "Немає результату" %></td>
             <td>
                 <form action="/admin/update-game" method="post">
                     <input type="hidden" name="gameId" value="<%= game.id %>">
-                    <input type="text" name="score" value="<%= game.score %>" required>
-
+                    <input type="text" name="score" value="<%= game.score || "" %>" placeholder="Немає результату" required>
                     <button type="submit">Зберегти</button>
                 </form>
-
             </td>
             <td>
                 <form action="/admin/delete" method="post">
@@ -55,6 +84,7 @@
         </tr>
     <% }) %>
 </table>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const urlParams = new URLSearchParams(window.location.search);
