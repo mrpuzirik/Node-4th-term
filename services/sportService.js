@@ -1,11 +1,11 @@
 const sportRepository = require('../repositories/sportRepository');
+const bcrypt = require('bcrypt');
 
 class SportService {
 
   async getSchedule() {
     try {
-      const games = await sportRepository.getGames();  // Отримуємо всі ігри з репозиторія
-      return games;
+      return await sportRepository.getGames();
     } catch (error) {
       throw new Error('Не вдалося отримати розклад');
     }
@@ -109,6 +109,16 @@ class SportService {
     } catch (error) {
       throw new Error('Не вдалося перевірити наявність матчів для команди');
     }
+  }
+
+  async login(username, password) {
+    const user = await sportRepository.getUserByUsername(username);
+    if (!user) throw new Error('Користувача не знайдено');
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) throw new Error('Невірний пароль');
+
+    return { id: user.id, username: user.username };
   }
 }
 

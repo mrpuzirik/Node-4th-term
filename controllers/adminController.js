@@ -2,6 +2,11 @@ const express = require('express');
 const sportService = require('../services/sportService');
 const router = express.Router();
 
+router.use((req, res, next) => {
+    if (!req.session.user) return res.redirect('/login');
+    next();
+});
+
 router.get('/', async (req, res) => {
     try {
         const games = await sportService.getSchedule();

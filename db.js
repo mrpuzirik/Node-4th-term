@@ -1,6 +1,25 @@
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
 const db = new sqlite3.Database('./data/sports.db');
 
+db.serialize(() => {
+    // Створення таблиці користувачів
+    db.run(`CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                passwordHash TEXT NOT NULL
+            )`);
+});
+
+bcrypt.hash('admin', 10).then(hash => {
+    db.run('INSERT INTO users (username, passwordHash) VALUES (?, ?)', ['admin', hash], (err) => {
+        if (err) return console.error(err);
+        console.log('Адміністратора створено');
+        db.close();
+    });
+});
+
+module.exports = db;
 /*const data = {
     teams: [
         "Динамо", "Шахтар", "Олександрія", "Карпати", "Кривбас"
