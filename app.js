@@ -3,6 +3,7 @@ const session = require('express-session');
 const sportController = require('./controllers/sportController');
 const adminRoutes = require('./controllers/adminController');
 const authRoutes = require('./controllers/authController');
+const sequelize = require("./dbORM");
 
 
 const app = express();
@@ -23,6 +24,12 @@ app.use('/admin', adminRoutes);
 app.use('/login', authRoutes);
 
 const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+sequelize.sync({ force: false }) // force: false не перезаписує таблиці
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+      });
+    })
+    .catch(err => {
+      console.error('Unable to sync the database:', err);
+    });

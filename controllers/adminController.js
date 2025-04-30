@@ -20,7 +20,6 @@ router.get('/', async (req, res) => {
 
 router.post('/game', async (req, res) => {
     const { date, team1, team2 } = req.body;
-
     if (team1 === team2) {
         return res.redirect(`/admin?error=${encodeURIComponent('Команда не може грати сама проти себе!')}`);
     }

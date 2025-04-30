@@ -1,129 +1,116 @@
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./data/sports.db');
+const { Game, Team, Result, User } = require('../model');
 
 class SportRepository {
 
-  getGames() {
-    return new Promise((resolve, reject) => {
-      db.all(`SELECT games.id, games.date, t1.name AS team1, t2.name AS team2, results.score
-              FROM games
-              JOIN teams t1 ON games.team1_id = t1.id
-              JOIN teams t2 ON games.team2_id = t2.id
-              LEFT JOIN results ON games.id = results.game_id`, (err, rows) => {
-        if (err) {
-          return reject('Помилка при отриманні ігор з бази даних: ' + err);
-        }
-        resolve(rows);
+  async getGames() {
+    try {
+      const games = await Game.findAll({
+        include: [
+          { model: Team, as: 'team1', attributes: ['name'] },
+          { model: Team, as: 'team2', attributes: ['name'] },
+          { model: Result, attributes: ['score'] }
+        ]
       });
-    });
+      return games;
+    } catch (error) {
+      throw new Error('Помилка при отриманні ігор з бази даних: ' + error.message);
+    }
   }
 
-  getAllTeams() {
-    return new Promise((resolve, reject) => {
-      db.all('SELECT * FROM teams', (err, rows) => {
-        if (err) {
-          return reject('Помилка при отриманні команд: ' + err);
-        }
-        resolve(rows);
-      });
-    });
+  async getAllTeams() {
+    try {
+      const teams = await Team.findAll();
+      return teams;
+    } catch (error) {
+      throw new Error('Помилка при отриманні команд: ' + error.message);
+    }
   }
 
-  addGame(date, team1Id, team2Id) {
-    return new Promise((resolve, reject) => {
-      db.run('INSERT INTO games (date, team1_id, team2_id) VALUES (?, ?, ?)', [date, team1Id, team2Id], function(err) {
-        if (err) {
-          return reject('Помилка при додаванні гри: ' + err);
-        }
-        resolve(this.lastID);  // Повертаємо ID нової гри
-      });
-    });
+  async addGame(date, team1Id, team2Id) {
+    try {
+      const team1 = await Team.findByPk(team1Id);
+      const team2 = await Team.findByPk(team2Id);
+
+      if (!team1 || !team2) {
+        throw new Error('Одна або обидві команди не знайдені');
+      }
+
+      const newGame = await Game.create({ date, team1_id: team1Id, team2_id: team2Id });
+      return newGame.id;  // Повертаємо ID нової гри
+    } catch (error) {
+      throw new Error('Помилка при додаванні гри: ' + error.message);
+    }
   }
 
-  addResult(gameId, score) {
-    return new Promise((resolve, reject) => {
-      db.run('INSERT INTO results (game_id, score) VALUES (?, ?)', [gameId, score], function(err) {
-        if (err) {
-          return reject('Помилка при додаванні результату: ' + err);
-        }
-        resolve(this.lastID);
-      });
-    });
+  async addResult(gameId, score) {
+    try {
+      const result = await Result.create({ game_id: gameId, score });
+      return result.id;
+    } catch (error) {
+      throw new Error('Помилка при додаванні результату: ' + error.message);
+    }
   }
 
-  updateGameResult(gameId, score) {
-    return new Promise((resolve, reject) => {
-      db.run('UPDATE results SET score = ? WHERE game_id = ?', [score, gameId], function(err) {
-        if (err) {
-          return reject('Помилка при оновленні результату: ' + err);
-        }
-        resolve();
-      });
-    });
+  async updateGameResult(gameId, score) {
+    try {
+      const result = await Result.findOne({ where: { game_id: gameId } });
+      if (!result) {
+        throw new Error('Результат для цієї гри не знайдений');
+      }
+
+      await result.update({ score });
+    } catch (error) {
+      throw new Error('Помилка при оновленні результату: ' + error.message);
+    }
   }
 
-  updateGameDate(gameId, newDate) {
-    return new Promise((resolve, reject) => {
-      db.run('UPDATE games SET date = ? WHERE id = ?', [newDate, gameId], function(err) {
-        if (err) {
-          return reject('Помилка при оновленні дати гри: ' + err);
-        }
-        resolve();
-      });
-    });
+
+  async deleteGame(gameId) {
+    try {
+      const game = await Game.findByPk(gameId);
+      if (!game) {
+        throw new Error('Гра не знайдена');
+      }
+
+      await Game.destroy({ where: { id: gameId } });
+    } catch (error) {
+      throw new Error('Помилка при видаленні гри: ' + error.message);
+    }
   }
 
-  deleteGame(gameId) {
-    return new Promise((resolve, reject) => {
-      db.run('DELETE FROM games WHERE id = ?', [gameId], function(err) {
-        if (err) {
-          return reject('Помилка при видаленні гри: ' + err);
-        }
-        resolve();
-      });
-    });
+  async deleteResult(gameId) {
+      const result = await Result.findOne({ where: { game_id: gameId } });
+      if (result) {
+        await Result.destroy({ where: { game_id: gameId } });
+      }
+
+
   }
 
-  deleteResult(gameId) {
-    return new Promise((resolve, reject) => {
-      db.run('DELETE FROM results WHERE game_id = ?', [gameId], function(err) {
-        if (err) {
-          return reject('Помилка при видаленні результату: ' + err);
-        }
-        resolve();
-      });
-    });
+  async addTeam(teamName) {
+    try {
+      const newTeam = await Team.create({ name: teamName });
+      return newTeam.id;
+    } catch (error) {
+      throw new Error('Помилка при додаванні команди: ' + error.message);
+    }
   }
 
-  addTeam(teamName) {
-    return new Promise((resolve, reject) => {
-      db.run('INSERT INTO teams (name) VALUES (?)', [teamName], function(err) {
-        if (err) {
-          return reject('Помилка при додаванні команди: ' + err);
-        }
-        resolve();
-      });
-    });
+  async deleteTeam(teamId) {
+    try {
+      await Team.destroy({ where: { id: teamId } });
+    } catch (error) {
+      throw new Error('Помилка при видаленні команди: ' + error.message);
+    }
   }
 
-  deleteTeam(teamId) {
-    return new Promise((resolve, reject) => {
-      db.run('DELETE FROM teams WHERE id = ?', [teamId], function(err) {
-        if (err) {
-          return reject('Помилка при видаленні команди: ' + err);
-        }
-        resolve();
-      });
-    });
-  }
-
-  getUserByUsername(username) {
-    return new Promise((resolve, reject) => {
-      db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
-        if (err) return reject(err);
-        resolve(row);
-      });
-    });
+  async getUserByUsername(username) {
+    try {
+      const user = await User.findOne({ where: { username } });
+      return user;
+    } catch (error) {
+      throw new Error('Помилка при отриманні користувача: ' + error.message);
+    }
   }
 
 }
