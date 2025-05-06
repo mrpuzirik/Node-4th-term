@@ -104,7 +104,7 @@ class SportService {
   async hasMatchOnDate(teamName, date) {
     try {
       const games = await sportRepository.getGames();
-      const matchesForTeam = games.filter(game => (game.team1 === teamName || game.team2 === teamName) && game.date === date);
+      const matchesForTeam = games.filter(game => (game.team1.name === teamName || game.team2.name === teamName) && game.date === date);
       return matchesForTeam.length > 0;
     } catch (error) {
       throw new Error('Не вдалося перевірити наявність матчів для команди');

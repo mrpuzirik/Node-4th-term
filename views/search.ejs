@@ -21,8 +21,8 @@
       <% games.forEach(game => { %>
         <tr>
           <td><%= game.date %></td>
-          <td><%= game.team1 %> vs <%= game.team2 %></td>
-          <td><%= game.score || 'Немає результату' %></td>
+          <td><%= game.team1?.name %> vs <%= game.team2?.name %></td>
+          <td><%= game.Result?.score || 'Немає результату' %></td>
         </tr>
       <% }) %>
     </table>

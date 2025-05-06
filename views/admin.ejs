@@ -66,8 +66,8 @@
                     <button type="submit">Зберегти</button>
                 </form>
             </td>
-            <td><%= game.team1 %> vs <%= game.team2 %></td>
-            <td><%= game.score || "Немає результату" %></td>
+            <td><%= game.team1?.name %> vs <%= game.team2?.name %></td>
+            <td><%= game.Result?.score || 'Немає результату' %></td>
             <td>
                 <form action="/admin/update-game" method="post">
                     <input type="hidden" name="gameId" value="<%= game.id %>">
