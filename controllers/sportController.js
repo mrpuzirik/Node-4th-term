@@ -7,30 +7,32 @@ router.get('/', (req, res) => {
 });
 
 router.get('/schedule', async (req, res) => {
-  const games = await sportService.getSchedule();
-  res.render('schedule', { games });
+  try {
+    const games = await sportService.getSchedule();
+
+    if (!Array.isArray(games)) {
+      return res.status(500).send('Помилка в отриманні даних для розкладу');
+    }
+
+    res.render('schedule', { games });
+  } catch (error) {
+    res.status(500).send('Помилка в отриманні даних для розкладу: ' + error.message);
+  }
 });
 
 router.get('/search', async (req, res) => {
   const team = req.query.team;
-  const games = await sportService.searchByTeam(team);
-  res.render('search', { games, team });
-});
 
-router.get('/admin/game/new', (req, res) => {
-  res.render('schedule', { games: [] });
-});
+  if (!team) {
+    return res.status(400).send('Будь ласка, введіть назву команди');
+  }
 
-router.post('/admin/game', async (req, res) => {
-  const { date, team1, team2 } = req.body;
-  await sportService.addGame(date, [team1, team2]);
-  res.redirect('/schedule');
-});
-
-router.post('/admin/result', async (req, res) => {
-  const { gameId, score } = req.body;
-  await sportService.addResult(gameId, score);
-  res.redirect('/schedule');
+  try {
+    const games = await sportService.searchByTeam(team);  // Отримуємо ігри для конкретної команди
+    res.render('search', { games, team });
+  } catch (error) {
+    res.status(500).send('Помилка при пошуку ігор за командою: ' + error.message);
+  }
 });
 
 module.exports = router;
