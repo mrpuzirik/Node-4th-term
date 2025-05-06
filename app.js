@@ -1,8 +1,10 @@
 const express = require('express');
 const session = require('express-session');
 const sportController = require('./controllers/sportController');
+
 const adminRoutes = require('./controllers/adminController');
 const authRoutes = require('./controllers/authController');
+
 
 
 const app = express();
@@ -19,8 +21,10 @@ app.use(session({
 }));
 
 app.use('/', sportController);
+
 app.use('/admin', adminRoutes);
 app.use('/login', authRoutes);
+
 
 const PORT = 3000;
 app.listen(PORT, () => {
