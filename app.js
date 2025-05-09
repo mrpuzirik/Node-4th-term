@@ -24,7 +24,7 @@ app.use('/admin', adminRoutes);
 app.use('/login', authRoutes);
 
 const PORT = 3000;
-sequelize.sync({ force: false }) // force: false не перезаписує таблиці
+sequelize.sync({ force: false })
     .then(() => {
       app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);

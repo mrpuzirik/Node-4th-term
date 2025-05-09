@@ -16,7 +16,7 @@ class SportService {
 
     try {
       const games = await sportRepository.getGames();
-      return games.filter(game => game.team1 === team || game.team2 === team);
+      return games.filter(game => game.team1.name === team || game.team2.name === team);
     } catch (error) {
       throw new Error('Не вдалося знайти ігри для команди');
     }
