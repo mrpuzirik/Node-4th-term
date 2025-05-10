@@ -28,7 +28,7 @@ router.get('/search', async (req, res) => {
   }
 
   try {
-    const games = await sportService.searchByTeam(team);  // Отримуємо ігри для конкретної команди
+    const games = await sportService.searchByTeam(team);
     res.render('search', { games, team });
   } catch (error) {
     res.status(500).send('Помилка при пошуку ігор за командою: ' + error.message);
