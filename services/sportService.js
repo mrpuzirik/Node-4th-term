@@ -74,10 +74,10 @@ class SportService {
         throw new Error('Гра з таким ID не знайдена');
       }
 
-      if (game.score && game.score !== "Немає результату") {
-        await sportRepository.updateGameResult(gameId, score);
+      if (game.Result?.score && game.score !== "Немає результату") {
+          await sportRepository.updateGameResult(gameId, score);
        } else {
-        await sportRepository.addResult(gameId, score);
+         await sportRepository.addResult(gameId, score);
       }
     } catch (error) {
       console.error('Помилка при оновленні/додаванні результату:', error);
