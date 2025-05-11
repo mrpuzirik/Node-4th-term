@@ -10,6 +10,10 @@ const sequelize = require("./dbORM");
 
 const app = express();
 
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
+
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -25,6 +29,11 @@ app.use('/', sportController);
 
 app.use('/admin', adminRoutes);
 app.use('/login', authRoutes);
+
+app.use('/api/admin', require('./controllers/adminApiController'));
+app.use('/api', require('./controllers/sportApiController'));
+app.use('/api', require('./controllers/authApiController'));
+
 
 
 const PORT = 3000;

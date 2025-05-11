@@ -77,6 +77,7 @@ class SportRepository {
     }
   }
 
+
   async deleteGame(gameId) {
     try {
       const game = await Game.findByPk(gameId);
