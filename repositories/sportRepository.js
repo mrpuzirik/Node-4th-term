@@ -64,6 +64,19 @@ class SportRepository {
     }
   }
 
+  async updateGameDate(gameId, newDate) {
+    try {
+      const game = await Game.findByPk(gameId);
+      if (!game) {
+        throw new Error('Результат для цієї гри не знайдений');
+      }
+
+      await game.update({ date: newDate });
+    } catch (error) {
+      throw new Error('Помилка при оновленні результату: ' + error.message);
+    }
+  }
+
 
   async deleteGame(gameId) {
     try {
