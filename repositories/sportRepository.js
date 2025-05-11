@@ -36,7 +36,7 @@ class SportRepository {
       }
 
       const newGame = await Game.create({ date, team1_id: team1Id, team2_id: team2Id });
-      return newGame.id;  // Повертаємо ID нової гри
+      return newGame.id;
     } catch (error) {
       throw new Error('Помилка при додаванні гри: ' + error.message);
     }
@@ -96,8 +96,6 @@ class SportRepository {
       if (result) {
         await Result.destroy({ where: { game_id: gameId } });
       }
-
-
   }
 
   async addTeam(teamName) {

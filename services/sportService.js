@@ -14,12 +14,14 @@ class SportService {
     async searchByTeam(team) {
         if (!team) return [];
 
+
         try {
             const games = await sportRepository.getGames();
             return games.filter(game => game.team1.name === team || game.team2.name === team);
         } catch (error) {
             throw new Error('Не вдалося знайти ігри для команди');
         }
+
     }
 
     async addGame(date, participants) {
@@ -65,6 +67,7 @@ class SportService {
         }
     }
 
+
     async updateGameResult(gameId, score) {
         try {
             const games = await sportRepository.getGames();
@@ -83,6 +86,27 @@ class SportService {
             console.error('Помилка при оновленні/додаванні результату:', error);
             throw new Error('Не вдалося оновити або додати результат гри');
         }
+
+  }
+
+  async updateGameResult(gameId, score) {
+    try {
+      const games = await sportRepository.getGames();
+      const game = games.find(g => g.id === gameId);
+
+      if (!game) {
+        throw new Error('Гра з таким ID не знайдена');
+      }
+
+      if (game.Result?.score && game.score !== "Немає результату") {
+          await sportRepository.updateGameResult(gameId, score);
+       } else {
+         await sportRepository.addResult(gameId, score);
+      }
+    } catch (error) {
+      console.error('Помилка при оновленні/додаванні результату:', error);
+      throw new Error('Не вдалося оновити або додати результат гри');
+
     }
 
     async addTeam(teamName) {
